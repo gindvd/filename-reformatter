@@ -20,36 +20,37 @@ def rename_files(args):
 
     for item in os.scandir(target_directory):
         # Checks if item is file and not a folder / directory
-        if os.path.isfile(item):
+        if not os.path.isfile(item):
+            continue
 
-            base_name = os.path.basename(item)
-            # Splits file name from file extenstion
-            name, ext = os.path.splitext(base_name)
+        base_name = os.path.basename(item)
+        # Splits file name from file extenstion
+        name, ext = os.path.splitext(base_name)
 
-            new_name = replace_with_underscores(name)
-            new_name = remove_empty_strings(new_name)
+        new_name = replace_with_underscores(name)
+        new_name = remove_empty_strings(new_name)
 
-            if remove_punctuation:
-                new_name = remove_punctuation_characters(new_name)
+        if remove_punctuation:
+            new_name = remove_punctuation_characters(new_name)
 
-            if append_resolution:
-                new_name = append_image_resolution(item, new_name)
+        if append_resolution:
+            new_name = append_image_resolution(item, new_name)
 
-            if capitalize:
-                new_name = capitalize_words(new_name)
+        if capitalize:
+            new_name = capitalize_words(new_name)
 
-            new_basename = new_name + ext
-            new_filename = os.path.join(target_directory, new_basename)
+        new_basename = new_name + ext
+        new_filename = os.path.join(target_directory, new_basename)
 
-            try:
-                os.rename(item, new_filename)
-            except FileExistsError:
-                uniquify(item)
+        try:
+            os.rename(item, new_filename)
+        except FileExistsError:
+            uniquify(item)
 
-            file_count += 1
-            percentage = math.floor(file_count / total_files) * 100
+        file_count += 1
+        percentage = math.floor(file_count / total_files) * 100
 
-            progress_bar.update(percentage)
+        progress_bar.update(percentage)
 
 
 def uniquify(file_path: str) -> str:
